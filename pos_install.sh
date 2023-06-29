@@ -10,14 +10,6 @@
 set -e
 
 
-##URLS
-
-URL_GOOGLE_CHROME="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
-URL_VS_CODE="https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-URL_DISCORD="https://discord.com/api/download?platform=linux&format=deb"
-
-DOWNLOAD_DIRECTORY="$HOME/Downloads/apps"
-
 #Colors
 RED='\e[1;91m'
 GREEN='\e[1;92m'
@@ -42,6 +34,7 @@ else
 fi
 }
 
+
 # Presentation function
 print_ascii_art(){
     echo '
@@ -64,12 +57,12 @@ just_apt_update(){
 APPS_TO_INSTALL=(
     build-essential
     audacity
-    piper
     neofetch
     guvcview
+    whois
+    gnome-tweaks
     vlc
     qbittorrent
-    spotify-client
     zsh
     vim
     ffmpeg
@@ -81,13 +74,10 @@ APPS_TO_INSTALL=(
 )
 
 install_debs(){
-    echo -e "${GREEN}[INFO] - Downloading packages .deb${NO_COLOR}"
 
-mkdir "$DOWNLOAD_DIRECTORY"
-wget -c "$URL_VS_CODE"       -P "$DOWNLOAD_DIRECTORY"
-wget -c "$URL_VS_CODE"       -P "$DOWNLOAD_DIRECTORY"
 
-## Installing the .dev packages downloaded in the previous session
+## installing .deb packages downloaded in the previous session ##
+echo -e "${VERDE}[INFO] - Installing downloaded .deb packages${NO_COLOR}"
 sudo dpkg -i $DOWNLOAD_DIRECTORY/*.deb
 
 # Installing programs in the apt
@@ -103,18 +93,6 @@ for program_name in ${APPS_TO_INSTALL[@]}; do
 done
 
 }
-
-## Installing flatpak packages ##
-install_flatpaks(){
-
-  echo -e "${GREEN}[INFO] - Installing flatpak packages${NO_COLOR}"
-
-flatpak install flathub com.obsproject.Studio -y
-flatpak install flathub com.spotify.Client -y
-flatpak install flathub org.telegram.desktop -y
-flatpak install flathub org.freedesktop.Piper -y
-flatpak install flathub org.gnome.Boxes -y
-flatpak install flathub org.qbittorrent.qBittorrent -y
 }
 
 
@@ -122,7 +100,7 @@ flatpak install flathub org.qbittorrent.qBittorrent -y
 ## Finishing, updating and cleaning##
 system_clean(){
 sudo apt update && sudo apt dist-upgrade -y
-flatpak update
+flatpak update -y
 sudo apt autoclean
 sudo apt autoremove -y
 }
@@ -135,7 +113,6 @@ print_ascii_art
 internet_tests
 just_apt_update
 install_debs
-install_flatpaks
 apt_update
 system_clean
 
